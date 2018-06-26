@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="full-screen" content="yes">
+    <link rel="stylesheet" href="jquery-ui-1.11.4/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!--<header class="header">-->
+    <!--<h2><a href="javascript:history.go(-1)" class="return glyphicon glyphicon-chevron-left"></a >积分</h2>-->
+<!--</header>-->
+<div class="content">
+    <table class="integral table text-center"></table>
+    <p class="tip">不同房间的积分不可通用,只能在相应的商店进行兑换。 <br/>
+        转移积分提交以后,为了保证账号积分安全,请联系相关放房间客服确认转移的积分。
+    </p>
+    <!--二级密码-->
+    <div class="pwdFrame">
+        <h4>请输入二级密码</h4>
+        <h5>为了确保您的账号安全,请输入二级密码</h5>
+        <input id="password" type="password" placeholder="输入二级密码" maxlength="9"/> <br/>
+        <span class="pwdTips"></span>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="pwdConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="pwdCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--积分转移-->
+    <div class="transferFrame">
+        <h4>积分转移</h4>
+        <h5>总分:<span class="totalScore"></span></h5>
+        <div  style="text-align:left;margin-left: 1rem;">
+            <select id="transferSel" style="margin-left: 0.1rem">
+                <option value="1">积分转移目标账号</option>
+                <option value="2">积分转移目标ID</option>
+            </select>
+            <input id="userName" type="text" placeholder="请输入积分转移玩家ID"/>
+            <input id="insureName" type="text" placeholder="请再次输入玩家账号/ID" maxlength="12"/>
+            <input id="transferPoint" type="text" placeholder="请输入转移积分数量"/>
+        </div>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="integralConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="integralCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+<script src="js/common.js"></script>
+<script>
+   // 获取列表
+    var channel;
+    var totalCoin;
+    var userName=sessionStorage.getItem("userName");
+    var userId=sessionStorage.getItem("userId");
+    function getList(){
+        $.ajax({
+            type:"post",
+            cache:"false",
+            data:{"userName":userName},
+            url:getUrl("/user/safe/point/userPointList"),
+            success:function(data){
+                if(data.meta.code==0){
+                    var html="";
+                   for(var i=0;i<data.data.length;i++){
+                       html+='<tr><td class="totalCoin">总积分<br/><span class="point">'+data.data[i].user_score+'</span></td><td>转移积分<br/><span class="transfer_point">'+data.data[i].transfer_score+'</span></td><td class="channel" data-channel='+data.data[i].channel+'><span>房间号 <br/>'+data.data[i].table_password+'</span></td><td><a href="##" id="integralTransfer">积分转移</a></td></tr>';
+                   }
+                    $(".table").html(html);
+                }
+            }
+        })
+    }
+    getList();
+
+    // 积分转移按钮
+    var current;
+    $(".table").on("click","#integralTransfer",function(){
+        channel=$(this).parents("td").siblings(".channel").attr("data-channel");
+        totalCoin=$(this).parents("td").siblings(".totalCoin").children(".point").html();
+        $(".pwdFrame").css("display","block");
+    });
+    //验证密码
+    $("#pwdCancel").click(function(){
+        $(".pwdFrame").css("display","none");
+        $("#password").val("");
+        $(".pwdTips").html("");
+        $("#password").css("borderColor","#41362D");
+    });
+    $("#pwdConfirm").click(function(){
+        var password=$("#password").val();
+        if($("#password").val()==""){
+            $("#password").css("borderColor", "#f00");
+            $("#password").focus(function () {
+                $("#password").css("borderColor", "#41362D");
+            });
+            return false;
+        }else if(password.length<6){
+            $(".pwdTips").html("二级密码最少为6位");
+            $("#password").focus(function () {
+                $(".pwdTips").html("");
+            });
+            return false;
+        }
+        else{
+            $.ajax({
+                type:"post",
+                url:getUrl("/user/safe/authPassword"),
+                cache:"false",
+                data:{"userName":userName,"payPassword":password},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $(".totalScore").html(totalCoin);
+                        $(".pwdTips").html("");
+                        $(".pwdFrame").css("display","none");
+                        $(".transferFrame").css("display","block");
+                    }else{
+                        alert(data.meta.message);
+                    }
+                }
+            })
+        }
+    });
+    // 确定转移积分
+    $("#integralCancel").click(function(){
+        $(".transferFrame").css("display","none");
+        $("#userName").val("");
+        $("#insureName").val("");
+        $("#transferPoint").val("");
+        $("#password").val("");
+        $("#userName").css("borderColor","#41362D");
+        $("#transferPoint").css("borderColor","#41362D");
+        $("#insureName").css("borderColor","#41362D");
+        $("#password").css("borderColor","#41362D");
+    });
+    $("#integralConfirm").click(function(){
+        var current=$(this).parents("li").parents("ul").parents(".transferFrame").siblings(".table").children("tr").children("td");
+        var userName=$("#userName").val();
+        var insureName=$("#insureName").val();
+        var point=parseInt($("#transferPoint").val());
+        var value=$("#transferSel option:selected").val();
+        var data={"sourceUserId":userId,"channel":channel,"point":point};
+        if(value==1&&userName.length>=6){
+            data.targetUserName=userName;
+        }else if(value==1&&userName.length<6&&userName.length>0){
+            alert("用户名至少为6位");
+            return false;
+        }
+        if(value==2&&userName.length>0){
+            data.targetUserId=userName;
+        }
+        if($("#userName").val()==""){
+            $("#userName").css("borderColor","#f00");
+            $("#userName").focus(function(){
+                $("#userName").css("borderColor","#41362D");
+            });
+            return false;
+        }else if($("#insureName").val()==""){
+            $("#insureName").css("borderColor","#f00");
+            $("#insureName").focus(function(){
+                $("#insureName").css("borderColor","#41362D");
+            });
+            return false;
+        }
+        else if($("#transferPoint").val()==""){
+            $("#transferPoint").css("borderColor","#f00");
+            $("#transferPoint").focus(function(){
+                $("#transferPoint").css("borderColor","#41362D");
+            });
+            return false;
+        }
+        else if(userName!=insureName){
+            alert("两次输入的玩家账号/ID不一致");
+        }
+        else if(point>totalCoin){
+            alert("积分不足,无法转移");
+        }
+        else{
+            $.ajax({
+                type:"post",
+                url:getUrl("/user/safe/point/transferPoint"),
+                cache:"false",
+                data:data,
+                success:function(data){
+                    if(data.meta.code==0){
+                        getList();
+                        $(".transferFrame").css("display","none");
+                        $("#password").val("");
+                        $("#userName").val("");
+                        $("#insureName").val("");
+                        $("#transferPoint").val("");
+                        $(".point").html(data.data.point);
+                        $(".transfer_point").html(data.data.transfer_point);
+                        alert("转移积分申请已经提交，为了保证账号积分安全，请联系该房间客服确认转移积分");
+                        $(current).html("取消转移");
+                    }else{
+                        alert(data.meta.message);
+                    }
+                }
+            })
+        }
+    })
+
+</script>
+</body>
+</html>

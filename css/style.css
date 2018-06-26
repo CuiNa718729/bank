@@ -1,0 +1,235 @@
+body{
+    background: #26190D;
+    position: relative;
+}
+a:hover{
+    text-decoration: none;
+}
+.header{
+    background: #453431;
+}
+.header h2{
+    width:100%;
+    height: 0.8rem;
+    line-height:0.8rem;
+    text-align:center;
+    font-size:.5rem;
+    color:#f9f1df;
+}
+.header .return{
+    position:absolute;
+    left:.3rem;
+    top:0.05rem;
+    height:0.7rem;
+    line-height:0.7rem;
+    color:#fff;
+    padding:0 0.1rem;
+    display:inline-block;
+    border:1px solid #54433e;
+    border-radius: .1rem;
+    background-color: #6a5d5a;
+}
+#select{
+    width: 100%;
+    height: 0.75rem;
+    background:#543226;
+    color: #FFD375;
+    font-size: .3rem;
+    padding-left: 2.5rem;
+}
+.pwdTips,.scoreTips,.transferpwdTips{
+    display: inline-block;
+    height: 0.2rem;
+    color: #f00;
+}
+#transferSel{
+    width: 45%;
+    height: 0.5rem;
+    border-radius: 0.1rem;
+    background:#543226;
+    color: #FDF3E2;
+    margin-bottom: 0.2rem;
+}
+.pwdFrame,.scoreFrame,.transferFrame,.takeFrame,.saveFrame,.transferPwdFrame,.takePwdFrame{
+    width: 94%;
+    height: 4.6rem;
+    margin: 0.8rem auto 0;
+    border: 1px solid #41362D;
+    color: #FDF3E2;
+    background: #3B2D2B;
+    text-align: center;
+    padding-top: .2rem;
+    border-radius: 0.2rem;
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 12px;
+}
+.transferFrame{
+    height: 6.75rem;
+}
+.takeFrame,.saveFrame{
+    height: 4.9rem;
+}
+#userName,#insureName{
+    margin-bottom: 0.2rem;
+}
+.pwdFrame h5,.scoreFrame h5,.transferFrame h5,.saveFrame h5,.takeFrame h5,.transferPwdFrame H5,.takePwdFrame h5{
+    padding-top: .3rem ;
+    padding-bottom: .6rem;
+}
+#password,#scorePoint,#transferPoint,#userName,#insureName,#savePoint,#getPoint,#transferPassword,#takePassword,#savePassword{
+    width: 70%;
+    height: .7rem;
+    background: #2D251F;
+    border: 0.03rem solid #41362D;
+    padding-left: .1rem;
+    font-weight: 600;
+    border-radius: 0.1rem;
+}
+.pwdFrame ul,.scoreFrame ul,.transferFrame ul,.saveFrame ul,.takeFrame ul,.transferPwdFrame ul,.takePwdFrame ul{
+    display: flex;
+    justify-content: space-around;
+    margin: 0.6rem auto 0;
+}
+.pwdFrame ul li,.scoreFrame ul li,.transferFrame ul li,.saveFrame ul li,.takeFrame ul li,.transferPwdFrame ul li,.takePwdFrame ul li{
+    width: 50%;
+    height: 1.18rem;
+    line-height: 1.18rem;
+    border-top: 0.03rem solid #41362D;
+    border-radius: 0 0 0 .2rem;
+}
+.pwdFrame ul li a,.scoreFrame ul li a,.transferFrame ul li a,.saveFrame ul li a,.takeFrame ul li a,.transferPwdFrame ul li a,.takePwdFrame ul a{
+    font-size: .4rem;
+    color: #FDF3E2;
+}
+.pwdFrame ul li:first-child,.scoreFrame ul li:first-child,.transferFrame ul li:first-child,.takeFrame ul li:first-child,.saveFrame ul li:first-child,.takePwdFrame ul li:first-child,.takeFrame ul li:first-child,.transferPwdFrame ul li:first-child{
+    border-right: 0.03rem solid #41362D;
+}
+.pwdFrame ul li:last-child{
+    border-radius: 0 0 .2rem 0;
+}
+.score{
+    display: flex;
+    justify-content: space-around;
+    background: #CB8E59;
+    margin: 0 auto;
+    color: #FDF3E2;
+    font-weight:500;
+    text-align: center;
+    font-size: .3rem;
+}
+.score li{
+    width: 32.5%;
+    height: 2.8rem;
+    padding-top: 0.5rem;
+    border-right: 1px solid #FDF3E2;
+}
+.score li p{
+    padding-top: 0.2rem;
+}
+.score li:last-child{
+    border-right: 0;
+}
+.reset{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    height: 1rem;
+    margin: 0 auto;
+    background: #754D3A;
+    text-align: center;
+    font-size: .3rem;
+    color: #FDF3E2;
+}
+.reset li{
+    width: 32.5%;;
+    height: 1rem;
+    line-height: 1rem;
+    border-right: 1px solid #FDF3E2;
+}
+.reset li:last-child{
+    border-right: 0;
+}
+.downTime,.transferTime{
+    font-size: .2rem;
+    display: none;
+}
+.links{
+    width: 100%;
+}
+.links li{
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+    color: #FDF3E2;
+    padding-left: 0.1rem;
+    font-size: .3rem;
+    border-bottom: 1px solid #FDF3E2;
+}
+.links li span:first-child{
+    padding-right: 5.5rem;
+}
+.safeBox span:first-child{
+    padding-right: 5.2rem;
+}
+.integral,.maliang,.safeList{
+    width: 100%;
+}
+.maliang li,.safeList li{
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+    color: #FDF3E2;
+    padding-left: 0.1rem;
+    font-size: .25rem;
+    border-bottom: 1px solid #FDF3E2;
+}
+.integral tr{
+    border-bottom: 1px solid #dddddd;
+}
+.integral td{
+    color: #FDF3E2;
+}
+.maliang li a,.safeList li a{
+    display: inline-block;
+    color:#FDF3E2;
+    width: 1.2rem;
+    height: 0.5rem;
+    text-align: center;
+    line-height: 0.5rem;
+    background: #169BD5;
+    border-radius: 0.05rem;
+    margin-right: .4rem;
+    margin-top: .25rem;
+}
+.integral td a{
+    display: inline-block;
+    color:#FDF3E2;
+    width: 1.2rem;
+    height: 0.5rem;
+    text-align: center;
+    line-height: 0.5rem;
+    background: #169BD5;
+    border-radius: 0.05rem;
+}
+.maliang li a,.safeList li a{
+    float: right;
+}
+.safeCoin{
+    text-align: right;
+    display: inline-block;
+    width: 1.5rem;
+    margin-right: .6rem;
+}
+.maliang li span:first-child{
+    text-align: right;
+    display: inline-block;
+    width: 1.5rem;
+    margin-right: .6rem;
+}
+.tip{
+    color: #FDF3E2;
+    margin-left: .2rem;
+    margin-top: .2rem;
+}

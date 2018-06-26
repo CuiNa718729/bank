@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="full-screen" content="yes">
+    <link rel="stylesheet" href="jquery-ui-1.11.4/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!--<header class="header">-->
+    <!--<h2><a href="javascript:history.go(-1)" class="return glyphicon glyphicon-chevron-left"></a >保险箱</h2>-->
+<!--</header>-->
+<div class="content">
+    <ul style="color: #fff;padding-top: .2rem;">
+        <li class="pull-left" style="width: 2.3rem;padding-left: 0.1rem;">房间号</li>
+        <li>携带分数</li>
+    </ul>
+    <ul class="safeList"></ul>
+    <!--存分密码-->
+    <div class="pwdFrame">
+        <h4>请输入二级密码</h4>
+        <h5>为了确保您的账号安全,请输入二级密码</h5>
+        <input id="password" type="password" placeholder="输入二级密码"/> <br/>
+        <span class="pwdTips"></span>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="pwdConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="pwdCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--保险箱存分-->
+    <div class="saveFrame">
+        <h4>保险箱存分</h4>
+        <h5>
+            总分:<span class="totalCoin"></span> <br/> <br/>
+            最大存分:<span class="totalCoin"></span>
+        </h5>
+        <input id="savePoint" type="text" placeholder="输入存分数量" maxlength="9" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"/>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="saveConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="saveCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--保险箱取分-->
+    <div class="takeFrame">
+        <h4>保险箱取分</h4>
+        <h5>
+            总分:<span class="totalCoin"></span><br/><br/>
+            最大取分:<span class="maxCoin"></span>
+        </h5>
+        <input id="getPoint" type="text" placeholder="输入取分数量" maxlength="9" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"/>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="getConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="getCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--取分密码-->
+    <div class="takePwdFrame">
+        <h4>请输入二级密码</h4>
+        <h5>为了确保您的账号安全,请输入二级密码</h5>
+        <input id="takePassword" type="password" placeholder="输入二级密码"/> <br/>
+        <span class="pwdTips"></span>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="takePwdConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="takePwdCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+<script src="js/common.js"></script>
+<script>
+    // 获取用户名
+    var userName=sessionStorage.getItem("userName");
+
+   //获取保险箱列表
+    var userId=sessionStorage.getItem("userId");
+
+    function safeList(){
+        $.ajax({
+            type:'post',
+            cache:"false",
+            url:getUrl("/user/safe/safeList"),
+            data:{"userId":userId},
+            success:function(data){
+                if(data.meta.code==0){
+                    var html="";
+                    for(var i=0;i<data.data.length;i++){
+                        var coin=data.data[i].coin;
+                        var safeCoin=data.data[i].safe_coin;
+                        html+='<li><span class="saveCoin" data-coin='+coin+'  style="display: none;">'+data.data[i].coin+'</span><span class="channel"  style="display: none;">'+data.data[i].channel+'</span><span class="tableId">'+data.data[i].tableId+'</span><span class="safeCoin" data-safeCoin='+safeCoin+'>'+data.data[i].safe_coin+'</span><a id="takePoint" href="##">取分</a><a id="storePoint" href="##">存分</a></li>';
+                        $(".safeList").html(html);
+                    }
+                }
+            }
+        })
+    }
+    safeList();
+
+    //存分
+    $("#pwdCancel").click(function(){
+        $(".pwdFrame").css("display","none");
+        $("#password").val("");
+        $("#password").css("borderColor","#41362D");
+        $(".pwdTips").html("");
+    });
+    $("#saveCancel").click(function(){
+        $(".saveFrame").css("display","none");
+        $("#password").val("");
+        $("#password").css("borderColor","#41362D");
+        $("#savePoint").css("borderColor","#41362D");
+        $("#savePoint").val("");
+    });
+    $(".safeList").on("click","#storePoint",function(){
+        $(".pwdFrame").css("display","block");
+        channel=$(this).siblings(".channel").html();
+        totalCoin=$(this).siblings(".saveCoin").attr("data-coin");
+        safeCoin=$(this).siblings(".safeCoin").attr("data-safeCoin");
+    });
+    $("#pwdConfirm").click(function(){
+        var password=$("#password").val();
+        if($("#password").val()==""){
+            $("#password").css("borderColor", "#f00");
+            $("#password").focus(function () {
+                $("#password").css("borderColor", "#41362D");
+            });
+            return false;
+        }else if(password.length<6){
+            $(".pwdTips").html("二级密码最少为6位");
+            $("#password").focus(function () {
+                $(".pwdTips").html("");
+            });
+            return false;
+        }
+        else{
+            $.ajax({
+                type:"post",
+                url:getUrl("/user/safe/authPassword"),
+                cache:"false",
+                data:{"userName":userName,"payPassword":password},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $("#password").val("");
+                        $(".pwdTips").html("");
+                        $(".pwdFrame").css("display","none");
+                        $(".saveFrame").css("display","block");
+                        $(".totalCoin").html(totalCoin);
+                    }else{
+                        alert(data.meta.message);
+                    }
+                }
+            })
+        }
+    });
+    $("#saveConfirm").click(function(){
+        var coin=parseInt($("#savePoint").val());
+        if($("#savePoint").val()==""){
+          $("#savePoint").css("borderColor","#f00");
+            $("#savePoint").focus(function(){
+                $("#savePoint").css("borderColor","#41362D");
+            })
+            return false;
+        }
+       else if(coin>totalCoin){
+            alert("分数不足,无法存入保险箱");
+        } else{
+            $.ajax({
+                type:"post",
+                cache:"false",
+                url:getUrl("/user/safe/storeCoin"),
+                data:{"userId":userId,"channel":channel,"coin":coin},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $(".saveFrame").css("display","none");
+                        $("#savePoint").val("");
+                        alert("存分成功");
+                        safeList();
+                    }else{
+                        alert(data.meta.message)
+                    }
+                }
+            })
+        }
+    });
+
+    //取分
+    $("#takePwdCancel").click(function(){
+        $(".takePwdFrame").css("display","none");
+        $("#takePassword").val("");
+        $("#takePassword").css("borderColor","#41362D");
+        $(".pwdTips").html("");
+    });
+    $("#getCancel").click(function(){
+        $(".takeFrame").css("display","none");
+        $("#takePassword").val("");
+        $("#getPoint").css("borderColor","#41362D");
+        $("#getPoint").val("");
+   });
+    $(".safeList").on("click","#takePoint",function(){
+        $(".takePwdFrame").css("display","block");
+        channel=$(this).siblings(".channel").html();
+        totalCoin=$(this).siblings(".saveCoin").attr("data-coin");
+        safeCoin=$(this).siblings(".safeCoin").attr("data-safeCoin");
+    });
+    $("#takePwdConfirm").click(function(){
+        var password=$("#takePassword").val();
+        if($("#takePassword").val()==""){
+            $("#takePassword").css("borderColor", "#f00");
+            $("#takePassword").focus(function () {
+                $("#takePassword").css("borderColor", "#41362D");
+            });
+            return false;
+        }else if(password.length<6){
+            $(".pwdTips").html("二级密码最少为6位");
+            $("#takePassword").focus(function () {
+                $(".pwdTips").html("");
+            });
+            return false;
+        }
+        else{
+            $.ajax({
+                type:"post",
+                url:getUrl("/user/safe/authPassword"),
+                cache:"false",
+                data:{"userName":userName,"payPassword":password},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $("#takePassword").val();
+                        $(".pwdTips").html("");
+                        $(".takePwdFrame").css("display","none");
+                        $(".takeFrame").css("display","block");
+                        $(".totalCoin").html(totalCoin);
+                        $(".maxCoin").html(safeCoin);
+                    }else{
+                        alert(data.meta.message);
+                    }
+                }
+            })
+        }
+    });
+    $("#getConfirm").click(function(){
+        var coin=parseInt($("#getPoint").val());
+        if($("#getPoint").val() == ""){
+            $("#getPoint").css("borderColor","#f00");
+            $("#getPoint").focus(function(){
+                $("#getPoint").css("borderColor","#41362D");
+            })
+            return false;
+        }
+       else if(safeCoin == 0){
+            alert("保险箱内没有钱可取")
+        }else if(coin>safeCoin){
+            alert("取出分数大于保险箱分数,取出失败");
+        }
+        else{
+            $.ajax({
+                type:"post",
+                cache:"false",
+                url:getUrl("/user/safe/withdrawCoin"),
+                data:{"userId":userId,"channel":channel,"coin":coin},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $(".takeFrame").css("display","none");
+                        $("#getPoint").val("");
+                        $("#takePassword").val("");
+                        alert("取分成功");
+                        safeList();
+                    }else{
+                        alert(data.meta.message)
+                    }
+                }
+            })
+        }
+    });
+
+</script>
+</body>
+</html>

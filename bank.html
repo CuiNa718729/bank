@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="full-screen" content="yes">
+    <link rel="stylesheet" href="jquery-ui-1.11.4/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<!--<header class="header">-->
+    <!--<h2><a href="javascript:history.go(-1)" class="return glyphicon glyphicon-chevron-left"></a >银行</h2>-->
+<!--</header>-->
+<div class="content">
+    <select id="select">
+        <option value="0">请选择房间</option>
+    </select>
+    <ul class="score list-inline list-unstyled">
+        <li>
+            <p>总分</p >
+            <p class="coin"></p >
+        </li>
+        <li>
+            <p>预下分</p >
+            <p class="willScore"></p >
+            <div class="downTime">
+                <p>预下分截止时间</p >
+                <span class="subScoreYear"></span>
+                <span class="subScoreHour"></span>
+            </div>
+        </li>
+        <li>
+            <p>预转移</p >
+            <p class="transfer_coin"></p >
+            <div class="transferTime">
+                <p>预转移截止时间</p >
+                <span class="transferYear"></span>
+                <span class="transferHour"></span>
+            </div>
+        </li>
+    </ul>
+    <ul class="reset list-inline list-unstyled">
+        <li>上分</li>
+        <li id="scoreDown">预下分</li>
+        <li id="scoreTransfer">预转移</li>
+    </ul>
+    <!--积分码粮保险箱-->
+    <ul class="links">
+        <li class="point">
+            <span>积分</span>
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </li>
+        <!--<li class="maliang">-->
+            <!--<span>码粮</span>-->
+            <!--<span class="glyphicon glyphicon-chevron-right"></span>-->
+        <!--</li>-->
+        <li class="safeBox">
+            <span style="padding-right: 5.2rem;">保险箱</span>
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </li>
+    </ul>
+    <!--预下分-->
+    <div class="scoreFrame">
+        <h4>预下分</h4>
+        <h5>总分:<span class="totalScore"></span>  &nbsp;&nbsp;预下分: <span class="subCoin"></span> </h5>
+        <input id="scorePoint" type="text" placeholder="请输入预下分分数" maxlength="9"/> <br/>
+        <span class="scoreTips"></span>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="scoreConfirm" href="##">确定</a>
+            </li>
+            <li>
+                 <a id="scoreCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--预下分二级密码-->
+    <div class="pwdFrame">
+        <h4>请输入二级密码</h4>
+        <h5>为了确保您的账号安全,请输入二级密码</h5>
+        <input id="password" type="password" placeholder="输入二级密码" maxlength="9"/><br/>
+        <span class="pwdTips"></span>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="pwdConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="pwdCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--预转移-->
+    <div class="transferFrame">
+        <h4>预转移</h4>
+        <h5>总分:<span class="totalScore"></span>   &nbsp;&nbsp;预转移:<span class="transferCoin"></span></h5>
+        <div style="text-align:left;margin-left: 1rem;">
+            <select id="transferSel" style="margin-left: 0.1rem">
+                <option value="1">预转移目标账号</option>
+                <option value="2">预转移目标ID</option>
+            </select>
+            <input id="userName" type="text" placeholder="请输入预转移玩家账号/ID" maxlength="12"/>
+            <input id="insureName" type="text" placeholder="请再次输入预转移玩家账号/ID" maxlength="12"/>
+            <input id="transferPoint" type="text" placeholder="请输入预转移分数" maxlength="9"/>
+        </div>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="transferConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="transferCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+    <!--预转移二级密码-->
+    <div class="transferPwdFrame">
+        <h4>请输入二级密码</h4>
+        <h5>为了确保您的账号安全,请输入二级密码</h5>
+        <input id="transferPassword" type="password" placeholder="输入二级密码" maxlength="9"/><br/>
+        <span class="transferpwdTips"></span>
+        <ul class="list-unstyled list-inline">
+            <li>
+                <a id="transferPwdConfirm" href="##">确定</a>
+            </li>
+            <li>
+                <a id="transferPwdCancel" href="##">取消</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+<script src="js/common.js"></script>
+<script type="text/javascript">
+   // 获取用户名
+    var str=window.location.href;
+    if(str.lastIndexOf("=")!=-1){
+        var userName=str.substr(str.lastIndexOf("=")+1);
+        sessionStorage.setItem("userName",userName);
+    }
+
+   // 下拉框 房间号的值
+    var totalCoin;
+    var channel;
+    var userId;
+    function userTableList(){
+        $.ajax({
+        type:"post",
+        cache:"false",
+        data:{"userName":userName},
+        url:getUrl("/user/safe/userTableList"),
+        success:function(data){
+            if(data.meta.code==0){
+                var html='<option value='+0+'>请选择房间</option>';
+                for(var i=0;i<data.data.length;i++){
+                    tableId=data.data[i].tableName;
+                    userId=data.data[i].user_id;
+                    sessionStorage.setItem("userId",userId);
+                    html+='<option data-channel='+data.data[i].channel+' data-userId='+data.data[i].user_id+'>'+tableId+'</option>';
+                }
+                $("#select").html(html);
+            }
+        }
+     })
+   }
+    userTableList();
+
+
+    // 显示总分 预下分 预转移的值
+    function getallCoin(){
+        $("#select").change(function () {
+            channel=$(this).find("option:selected").attr("data-channel");
+           userId=$(this).find("option:selected").attr("data-userId");
+        $.ajax({
+            type:"post",
+            cache:"false",
+            url:getUrl("/user/safe/getallCoin"),
+            data:{"userId":userId,"channel":channel},
+            success:function(data){
+                if(data.meta.code==0){
+                    totalCoin=data.data.coin;
+                    subCoin=data.data.sub_coin;
+                    $(".coin").html(data.data.coin);
+                    $(".willScore").html(data.data.sub_coin);
+                    subCoin=data.data.sub_coin;
+                    if(parseInt(subCoin) > 0){
+                        $("#scoreDown").html("变更");
+                    }else{
+                        $("#scoreDown").html("预下分");
+                    }
+                    $(".transfer_coin").html(data.data.transfer_coin);
+                    transferCoin=data.data.transfer_coin;
+                    if(parseInt(transferCoin) > 0){
+                        $("#scoreTransfer").html("变更");
+                    }else{
+                        $("#scoreTransfer").html("预转移");
+                    }
+                }else{
+                    alert(data.meta.message);
+                }
+            }
+        })
+      });
+    }
+    getallCoin();
+
+
+    //预下分
+   var subCoin;
+    $("#pwdCancel").click(function(){
+        $(".pwdFrame").css("display","none");
+        $("#password").val("");
+        $(".pwdTips").html("");
+        $("#password").css("borderColor","#41362D");
+    });
+    $("#scoreCancel").click(function(){
+        $(".scoreFrame").css("display","none");
+        $("#scorePoint").val("");
+        $("#password").val("");
+        $("#password").css("borderColor","#41362D");
+        $("#scorePoint").css("borderColor","#41362D");
+        $(".scoreTips").html("");
+    });
+    $("#pwdConfirm").click(function(){
+        var password=$("#password").val();
+        if($("#password").val()==""){
+            $("#password").css("borderColor", "#f00");
+            $("#password").focus(function () {
+                $("#password").css("borderColor", "#41362D");
+            });
+            return false;
+        }else if(password.length<6){
+            $(".pwdTips").html("二级密码最少为6位");
+            $("#password").focus(function () {
+                $(".pwdTips").html("");
+            });
+            return false;
+        }
+        else{
+            $.ajax({
+                type:"post",
+                url:getUrl("/user/safe/authPassword"),
+                cache:"false",
+                data:{"userName":userName,"payPassword":password},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $(".pwdTips").html("");
+                        $(".pwdFrame").css("display","none");
+                        $(".scoreFrame").css("display","block");
+                        $(".totalScore").html(totalCoin);
+                        $(".subCoin").html(subCoin);
+                    }else{
+                        alert(data.meta.message);
+                    }
+                }
+            })
+        }
+    });
+    $("#scoreDown").click(function(){
+        if($("#select option:selected").val()==0){
+            alert("请先选择房间");
+        }else if(channel=="ZZ"){
+            alert("体验场分数仅供娱乐");
+            return false;
+        }else{
+            $(".pwdFrame").css("display","block");
+        }
+    });
+    $("#scoreConfirm").click(function(){
+       var coin=parseInt($("#scorePoint").val());
+       if($("#scorePoint").val()==""){
+           $("#scorePoint").css("borderColor", "#f00");
+           $("#scorePoint").focus(function () {
+               $("#scorePoint").css("borderColor", "#41362D");
+               $(".scoreTips").html("");
+           });
+           return false;
+       }else if(coin>totalCoin){
+           $(".scoreTips").html("预下分数超过总分");
+           $("#scorePoint").focus(function(){
+               $(".scoreTips").html("");
+           });
+           return false;
+       }else(
+               $.ajax({
+                   type:"post",
+                   url:getUrl("/user/safe/subCoin"),
+                   cache:"false",
+                   data:{"channel":channel,"userId":userId,"coin":coin},
+                   success:function(data){
+                       if(data.meta.code==0){
+                             getallCoin();
+                             subCoin=data.data.sub_coin;
+                             if(parseInt(subCoin) > 0){
+                                 $("#scoreDown").html("变更");
+                             }else{
+                                 $("#scoreDown").html("预下分");
+                             }
+                             $(".scoreFrame").css("display","none");
+                             $("#password").val("");
+                             $("#scorePoint").val("");
+                             $(".coin").html(data.data.coin);
+                             $(".willScore").html(data.data.sub_coin);
+//                           $(".downTime").css("display","block");
+//                           $(".subScoreYear").html(year+'.'+month+'.'+date);
+//                           $(".subScoreHour").html(hours+":"+minutes+":"+seconds);
+                       }else{
+                           alert(data.meta.message);
+                       }
+                   }
+               })
+       )
+});
+
+
+    //预转移
+   var transferCoin;
+    $("#transferPwdCancel").click(function(){
+         $(".transferPwdFrame").css("display","none");
+         $("#transferPassword").val("");
+         $("#transferPassword").css("borderColor","#41362D");
+         $(".transferpwdTips").html("");
+    });
+    $("#transferCancel").click(function(){
+        $(".transferFrame").css("display","none");
+        $("#userName").val("");
+        $("#insureName").val("");
+        $("#transferPoint").val("");
+        $("#transferPassword").val("");
+        $("#userName").css("borderColor","#41362D");
+        $("#transferPoint").css("borderColor","#41362D");
+        $("#insureName").css("borderColor","#41362D");
+        $("#transferPassword").css("borderColor","#41362D");
+    });
+    $("#scoreTransfer").click(function(){
+        if($("#select option:selected").val()==0){
+             alert("请先选择房间");
+          }else if(channel=="ZZ"){
+            alert("体验场分数仅供娱乐");
+            return false;
+        }else{
+               $(".transferPwdFrame").css("display","block");
+      }
+    });
+    $("#transferPwdConfirm").click(function(){
+        var password=$("#transferPassword").val();
+        if($("#transferPassword").val()==""){
+            $("#transferPassword").css("borderColor", "#f00");
+            $("#transferPassword").focus(function () {
+                $("#transferPassword").css("borderColor", "#41362D");
+            });
+            return false;
+        }else if(password.length<6){
+            $(".transferpwdTips").html("二级密码最少为6位");
+            $("#transferPassword").focus(function () {
+                $(".transferpwdTips").html("");
+            });
+            return false;
+        }
+        else{
+            $.ajax({
+                type:"post",
+                url:getUrl("/user/safe/authPassword"),
+                cache:"false",
+                data:{"userName":userName,"payPassword":password},
+                success:function(data){
+                    if(data.meta.code==0){
+                        $(".transferpwdTips").html("");
+                        $(".transferPwdFrame").css("display","none");
+                        $(".transferFrame").css("display","block");
+                        $(".totalScore").html(totalCoin);
+                        $(".transferCoin").html(transferCoin);
+                    }else{
+                        alert(data.meta.message);
+                    }
+                }
+            })
+        }
+    });
+    $("#transferConfirm").click(function(){
+        var userName=$("#userName").val();
+        var insureName=$("#insureName").val();
+        var coin=parseInt($("#transferPoint").val());
+        var value=$("#transferSel option:selected").val();
+        var data={"sourceUserId":userId,"channel":channel,"coin":coin};
+        if(value==1&&userName.length>=6){
+            data.targetUserName=userName;
+        }else if(value==1&&userName.length<6&&userName.length>0){
+            alert("用户名至少为6位");
+            return false;
+        }
+        if(value==2&&userName.length>0){
+            data.targetUserId=userName;
+        }
+        if($("#userName").val()==""){
+           $("#userName").css("borderColor","#f00");
+           $("#userName").focus(function(){
+               $("#userName").css("borderColor","#41362D");
+           });
+           return false;
+       }else if($("#insureName").val()==""){
+           $("#insureName").css("borderColor","#f00");
+           $("#insureName").focus(function(){
+               $("#insureName").css("borderColor","#41362D");
+           });
+           return false;
+       }
+       else if($("#transferPoint").val()==""){
+           $("#transferPoint").css("borderColor","#f00");
+           $("#transferPoint").focus(function(){
+               $("#transferPoint").css("borderColor","#41362D");
+           });
+           return false;
+       }
+        else if(userName!=insureName){
+            alert("两次输入的玩家账号/ID不一致");
+        }
+       else if(coin>totalCoin){
+           alert("分数不足,无法转移");
+       }
+       else{
+           $.ajax({
+               type:"post",
+               url:getUrl("/user/safe/transferCoin"),
+               cache:"false",
+               data:data,
+               success:function(data){
+                   if(data.meta.code==0){
+                       getallCoin();
+                       transferCoin=data.data.transfer_coin;
+                       if(parseInt(transferCoin) > 0){
+                           $("#scoreTransfer").html("变更");
+                       }else{
+                           $("#scoreTransfer").html("预转移");
+                       }
+                       $(".transferFrame").css("display","none");
+                       $("#transferPassword").val("");
+                       $("#userName").val("");
+                       $("#insureName").val("");
+                       $("#transferPoint").val("");
+                       $(".coin").html(data.data.coin);
+                       $(".transfer_coin").html(data.data.transfer_coin);
+//                       $(".transferTime").css("display","block");
+//                       $(".transferYear").html(year+'.'+month+'.'+date);
+//                       $(".transferHour").html(hours+":"+minutes+":"+seconds);
+                   }else{
+                       alert(data.meta.message);
+                   }
+               }
+           })
+       }
+    });
+</script>
